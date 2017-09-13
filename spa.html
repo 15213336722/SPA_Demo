@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        body{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #777;
+        }
+        #spa{
+            position: absolute;
+            top:8px;
+            left: 8px;
+            bottom: 8px;
+            right: 8px;
+            border-radius: 8px 8px 0 8px;
+            background-color: #fff;
+        }
+        .spa-slider{
+            position: absolute;
+            bottom: 0;
+            right: 2px;
+            width: 300px;
+            height: 16px;
+            cursor: pointer;
+            border-radius: 8px 0 0 0;
+            background-color: #f00;
+        }
+    </style>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        //Module /spa/
+        //provides chat slider capability(提供聊天滑块能力)
+        //
+        var spa = (function ($) {
+            //module scope variables(模块作用域下的变量)
+            var
+                //set constants(设置常量)
+                configMap = {
+                    extended_height:434,
+                    extended_title:'click to retract',
+                    retracted_height:16,
+                    retracted_title:'click to extend',
+                    template_html:'<div class="spa-slider"></div>'
+                },
+                //declare all other module scope variables(申明其他模块作用域下的变量)
+                $chartSlider,toggleSlider,onClickSlider,initModule;
+            //DOM method /toggleSlider/
+            //alternates slider height(替换滑块高度)
+            //
+            toggleSlider = function () {
+                var slider_height = $chartSlider.height();
+                //extend slider if fully retracted
+                if(slider_height === configMap.retracted_height){
+                    $chartSlider
+                        .animate({height:configMap.extended_height})
+                        .attr('title',configMap.extended_title);
+                    return true;
+                }
+                //retract slider if fully extended
+                else if(slider_height == configMap.extended_height){
+                    $chartSlider
+                        .animate({height:configMap.retracted_height})
+                        .attr('title',configMap.retracted_title);
+                    return true;
+                }
+            };
+
+            //event handler /onClickSlider/(事件处理者)
+            //receives click event and calls toggleSlider
+            //
+            onClickSlider = function (event) {
+                toggleSlider();
+                return false;
+            };
+
+            //public method /initModule/
+            //sets initial state and provides feature(设置初始状态并提供特色)
+            //
+            initModule = function ($container) {
+                //render HTML(渲染HTML)
+                $container.html(configMap.template_html);
+                //initialize slider height and title(初始化滑块高度和标题)
+                $chartSlider = $container.find('.spa-slider');
+                //bind the user click event to the event handler(绑定用户点击事件到事件处理程序)
+                $chartSlider.attr('title',configMap.retracted_title)
+                $chartSlider.click(onClickSlider);
+                return true;
+            }
+            return {initModule:initModule};
+        }(jQuery));
+        $(function () {
+            spa.initModule(jQuery('#spa'));
+        });
+    </script>
+</head>
+<body>
+<div id="spa">
+</div>
+</body>
+</html>
